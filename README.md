@@ -1,6 +1,7 @@
 
 # Design Patterns em Java
 
+
 # Padrão Factory
 
 Não precisa ter construtores para obter uma instância de um Objeto. Por padrão, basicamente temos a implementação baseado em três estrututas:
