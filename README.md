@@ -182,3 +182,208 @@ public class Adapter3 {
 
 ```
 
+# Padrão Strategy
+
+Esse padrão é utilizado para criarmos várias estratégias de implementação, não precisando numa definição de implementação o uso de vários ifs/else. Nesse padrão conseguimos encapsular o comportamento dos "algoritmos".
+Quando se refere a esse  padrão precisamos ter em mente 3 nomes
+
+- Estrategia - Interface - Contrato da Estrategia
+- Estrategia - Concreta - Implementação da Estrategia
+- Contexto - Implementação junto com a estratégia
+
+Podemos implementar esse padrão dessas 3 formas:
+
+**1 - Dados**
+
+```java
+package br.com.filipemot.stategy.interfaces;
+
+public interface EstrategiaPagamento {
+    void pagar(float valor);
+}
+
+package br.com.filipemot.stategy.classes;
+
+import br.com.filipemot.stategy.interfaces.EstrategiaPagamento;
+
+public class EstrategiaConcretaPagamentoCartaoCredito implements EstrategiaPagamento {
+
+    @Override
+    public void pagar(float valor) {
+        System.out.println(valor);
+    }
+}
+
+package br.com.filipemot.stategy.classes;
+
+import br.com.filipemot.stategy.interfaces.EstrategiaPagamento;
+
+public class EstrategiaConcretaPagamentoCartaoDebito implements EstrategiaPagamento {
+
+    @Override
+    public void pagar(float valor) {
+        System.out.println(valor);
+    }
+}
+
+package br.com.filipemot.stategy.classes;
+
+import br.com.filipemot.stategy.interfaces.EstrategiaPagamento;
+
+public class ContextoCompra {
+
+    float valor;
+
+    public ContextoCompra(float valor){
+        this.valor = valor;
+    }
+
+    public void processarCompra(EstrategiaPagamento estrategiaPagamento){
+        estrategiaPagamento.pagar(valor);
+    }
+}
+
+package br.com.filipemot.stategy.classes;
+
+public class Strategy {
+    public static void main(String[] args){
+        ContextoCompra compra = new ContextoCompra(0f);
+        compra.processarCompra(new EstrategiaConcretaPagamentoCartaoCredito());
+    }
+}
+```
+
+**2 - Instancia**
+
+```java
+package br.com.filipemot.stategy.interfaces;
+
+import br.com.filipemot.stategy.classes.ContextoCompra2;
+
+public interface EstrategiaPagamento2 {
+    void pagar(ContextoCompra2 compra);
+}
+
+package br.com.filipemot.stategy.classes;
+
+import br.com.filipemot.stategy.interfaces.EstrategiaPagamento2;
+
+public class ContextoCompra2 {
+
+    float valor;
+
+    public ContextoCompra2(float valor){
+        this.valor = valor;
+    }
+
+    public void processarCompra(EstrategiaPagamento2 estrategiaPagamento){
+
+        estrategiaPagamento.pagar(this);
+    }
+}
+
+package br.com.filipemot.stategy.classes;
+
+import br.com.filipemot.stategy.interfaces.EstrategiaPagamento2;
+
+public class EstrategiaConcretaPagamentoCartaoCredito2 implements EstrategiaPagamento2 {
+
+    @Override
+    public void pagar(ContextoCompra2 compra) {
+        System.out.println(compra.valor);
+    }
+}
+
+public class EstrategiaConcretaPagamentoCartaoDebito2 implements EstrategiaPagamento2 {
+
+    @Override
+    public void pagar(ContextoCompra2 contextoCompra2) {
+        System.out.println(contextoCompra2.valor);
+    }
+}
+
+package br.com.filipemot.stategy.classes;
+
+public class Strategy2 {
+    public static void main(String[] args){
+        ContextoCompra2 compra = new ContextoCompra2(0f);
+        compra.processarCompra(new EstrategiaConcretaPagamentoCartaoCredito2());
+    }
+}
+```
+
+**3 - Instancia por Interface**
+
+```java
+package br.com.filipemot.stategy.interfaces;
+
+public interface Pagavel3 {
+    float getValor();
+}
+
+package br.com.filipemot.stategy.interfaces;
+
+public interface EstrategiaPagamento3 {
+    void pagar(Pagavel3 compra);
+}
+
+package br.com.filipemot.stategy.classes;
+
+import br.com.filipemot.stategy.interfaces.EstrategiaPagamento3;
+import br.com.filipemot.stategy.interfaces.Pagavel3;
+
+public class EstrategiaConcretaPagamentoCartaoCredito3 implements EstrategiaPagamento3 {
+
+    @Override
+    public void pagar(Pagavel3 compra) {
+        System.out.println(compra.getValor());
+    }
+}
+
+package br.com.filipemot.stategy.classes;
+
+import br.com.filipemot.stategy.interfaces.EstrategiaPagamento3;
+import br.com.filipemot.stategy.interfaces.Pagavel3;
+
+public class EstrategiaConcretaPagamentoCartaoDebito3 implements EstrategiaPagamento3 {
+
+    @Override
+    public void pagar(Pagavel3 pagavel3) {
+        System.out.println(pagavel3.getValor());
+    }
+}
+
+package br.com.filipemot.stategy.classes;
+
+import br.com.filipemot.stategy.interfaces.EstrategiaPagamento3;
+import br.com.filipemot.stategy.interfaces.Pagavel3;
+
+public class ContextoCompra3 implements Pagavel3 {
+
+    float valor;
+
+    public ContextoCompra3(float valor){
+        this.valor = valor;
+    }
+
+    public void processarCompra(EstrategiaPagamento3 estrategiaPagamento){
+
+        estrategiaPagamento.pagar(this);
+    }
+
+    @Override
+    public float getValor() {
+        return this.valor;
+    }
+}
+
+package br.com.filipemot.stategy.classes;
+
+public class Strategy3 {
+    public static void main(String[] args){
+        ContextoCompra3 compra = new ContextoCompra3(0f);
+        compra.processarCompra(new EstrategiaConcretaPagamentoCartaoCredito3());
+    }
+}
+```
+
