@@ -387,3 +387,153 @@ public class Strategy3 {
 }
 ```
 
+# Padrão Singleton
+
+Singleton é ter uma única instância de uma classe na aplicação.
+
+Para a sua aplicação manter uma única instância de uma classe temos algumas maneiras de fazer isso.
+
+**Instância Estática -** Ter uma variável static com a instância da classe.
+
+```java
+package br.com.filipemot.singleton.classes;
+
+import br.com.filipemot.singleton.interfaces.Produto4;
+
+public class ProductFactory {
+    public static final ProductFactory INSTANCE = new ProductFactory();
+
+    private ProductFactory(){}
+
+    public Produto4 novoProduto(int tipoProduto){
+        switch (tipoProduto) {
+            case 1:
+                return new ProdutoPadrao4();
+            case 2:
+                return new ProdutoDigital4();
+            case 3:
+                return new ProdutoFisico4();
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+}
+```
+
+**Instância Lazy -** Ter um método que gerencia a criação da instância da classe
+
+```java
+package br.com.filipemot.singleton.classes;
+
+import br.com.filipemot.singleton.interfaces.Produto4;
+
+public class ProductFactoryLazy {
+    private static ProductFactoryLazy instance;
+
+    private ProductFactoryLazy(){}
+
+    public static ProductFactoryLazy getInstance(){
+        if(instance == null){
+            instance = new ProductFactoryLazy();
+        }
+
+        return instance;
+    }
+
+    public Produto4 novoProduto(int tipoProduto){
+        switch (tipoProduto) {
+            case 1:
+                return new ProdutoPadrao4();
+            case 2:
+                return new ProdutoDigital4();
+            case 3:
+                return new ProdutoFisico4();
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+}
+```
+
+**Instância Multithred -** Ter um método que gerencia a criação da instância da classe e sincroniza quando se utiliza em um código multithread.
+
+```java
+package br.com.filipemot.singleton.classes;
+
+import br.com.filipemot.singleton.interfaces.Produto4;
+
+public class ProductFactoryLazyMultihread {
+    private static ProductFactoryLazyMultihread instance;
+
+    private ProductFactoryLazyMultihread(){}
+
+    public static synchronized ProductFactoryLazyMultihread getInstance(){
+        if(instance == null){
+            instance = new ProductFactoryLazyMultihread();
+        }
+
+        return instance;
+    }
+
+    public Produto4 novoProduto(int tipoProduto){
+        switch (tipoProduto) {
+            case 1:
+                return new ProdutoPadrao4();
+            case 2:
+                return new ProdutoDigital4();
+            case 3:
+                return new ProdutoFisico4();
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+}
+```
+
+**Instância Enum -** Esse é a maneira mais aconselhável de fazer, onde o próprio java gerencia a criação da instância.
+
+```java
+package br.com.filipemot.singleton.classes;
+
+import br.com.filipemot.singleton.interfaces.Produto4;
+
+enum ProductFactoryEnum {
+INSTANCE;
+    public Produto4 novoProduto(int tipoProduto){
+        switch (tipoProduto) {
+            case 1:
+                return new ProdutoPadrao4();
+            case 2:
+                return new ProdutoDigital4();
+            case 3:
+                return new ProdutoFisico4();
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+}
+
+```
+
+Abaixo está a utilização do Singeton para cada tipo.
+
+```java
+package br.com.filipemot.singleton.classes;
+
+public class ProductSingleton {
+    public static void main(String args[]){
+        ProductFactory.INSTANCE.novoProduto(0);
+        ProductFactory.INSTANCE.novoProduto(1);
+        ProductFactory.INSTANCE.novoProduto(2);
+
+        ProductFactoryLazy.getInstance().novoProduto(0);
+        ProductFactoryLazy.getInstance().novoProduto(1);
+        ProductFactoryLazy.getInstance().novoProduto(2);
+
+        ProductFactoryEnum.INSTANCE.novoProduto(0);
+        ProductFactoryEnum.INSTANCE.novoProduto(1);
+        ProductFactoryEnum.INSTANCE.novoProduto(2);
+    }
+}
+
+```
