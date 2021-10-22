@@ -537,3 +537,141 @@ public class ProductSingleton {
 }
 
 ```
+
+# Padrão Proxy
+
+Proxy nada mais é que sobrescrever uma implementação, podendo adicionar mais ações e depois chamara a implementação original ou sobrescrever por inteiro. .
+O padrão proxy é formado por 3 partes:
+
+- RealSubject/Implementação
+- Proxy
+- Subject - Interface
+
+Uma das formas de fazer proxy é com herança.
+
+```java
+package br.com.filipemot.proxy.classes;
+
+public class ProdutoDAO {
+
+    public ProdutoDAO(){
+        simulaTempoAlto();
+    }
+
+    private void simulaTempoAlto() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Object find(long id) {
+        simulaTempoAlto();
+        return new Object();
+    }
+}
+
+package br.com.filipemot.proxy.classes;
+
+public class ProdutoService {
+    private ProdutoDAO produtoDAO;
+
+    public ProdutoService(ProdutoDAO produtoDAO){
+        this.produtoDAO = produtoDAO;
+    }
+
+    public Object buscarProduto(long id){
+        return produtoDAO.find(id);
+    }
+}
+
+//Proxy
+package br.com.filipemot.proxy.classes;
+
+public class LogProdutoDAO extends ProdutoDAO {
+
+    @Override
+    public Object find(long id) {
+        System.out.println("Log");
+        return super.find(id);
+    }
+}
+```
+
+A outra forma é por composição utilizando interface.
+
+```java
+package br.com.filipemot.proxy.interfaces;
+
+public interface IProdutoDAO {
+    Object find(long id);
+}
+
+package br.com.filipemot.proxy.classes;
+
+import br.com.filipemot.proxy.interfaces.IProdutoDAO;
+
+public class ProdutoDAO2 implements IProdutoDAO {
+
+    public ProdutoDAO2(){
+        simulaTempoAlto();
+    }
+
+    private void simulaTempoAlto() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Object find(long id) {
+        simulaTempoAlto();
+        return new Object();
+    }
+}
+
+package br.com.filipemot.proxy.classes;
+
+import br.com.filipemot.proxy.interfaces.IProdutoDAO;
+
+public class ProdutoService2 {
+    private IProdutoDAO produtoDAO;
+
+    public ProdutoService2(IProdutoDAO produtoDAO){
+        this.produtoDAO = produtoDAO;
+    }
+
+    public Object buscarProduto(long id){
+        return produtoDAO.find(id);
+    }
+}
+
+//Proxy
+package br.com.filipemot.proxy.classes;
+
+import br.com.filipemot.proxy.interfaces.IProdutoDAO;
+
+public class LazyProdutoDAO2 implements IProdutoDAO {
+
+    private IProdutoDAO daoReal;
+
+    public LazyProdutoDAO2(){
+
+    }
+
+    private void inicializaDAO() {
+        if(daoReal == null){
+            daoReal = new ProdutoDAO2();
+        }
+    }
+
+    @Override
+    public Object find(long id) {
+        inicializaDAO();
+
+        return daoReal.find(id);
+    }
+}
+```
