@@ -675,3 +675,186 @@ public class LazyProdutoDAO2 implements IProdutoDAO {
     }
 }
 ```
+
+# Padrão Decorator
+
+Incrementar funcionalidades a uma classe sem uso de herança.
+
+A primeiro tipo de implementação desse padrão é a passagem de Instância de outra classe no construtor.
+
+```java
+package br.com.filipemot.decorator.classes;
+
+public class Endereco {
+    final String logadouro;
+    final String bairro;
+    final String cidade;
+    final String uf;
+    final String cep;
+
+    public Endereco(String logadouro, String bairro, String cidade, String uf, String cep) {
+        super();
+        this.logadouro = logadouro;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.uf = uf;
+        this.cep = cep;
+    }
+}
+
+package br.com.filipemot.decorator.classes;
+
+public class EnderecadorSimples {
+    public String preparaEndereco(Endereco endereco){
+        StringBuilder sb = new StringBuilder();
+        sb.append(endereco.logadouro);
+        sb.append(endereco.bairro);
+        sb.append(endereco.cidade);
+        sb.append(endereco.uf);
+        sb.append(endereco.cep);
+
+        return sb.toString();
+    }
+}
+
+package br.com.filipemot.decorator.classes;
+
+//Decorator - Acrescenta funcionalidades
+public class EnderecadorCaixaAlta {
+    EnderecadorSimples enderecadorSimples;
+
+    public EnderecadorCaixaAlta(EnderecadorSimples enderecadorSimples){
+        super();
+        this.enderecadorSimples = enderecadorSimples;
+    }
+
+    public String preparaEndereco(Endereco endereco){
+        return enderecadorSimples.preparaEndereco(endereco).toUpperCase();
+    }
+}
+```
+
+Uma outra forma de trabalhar com esse padrão é utilizando interface.
+
+```java
+package br.com.filipemot.decorator.classes;
+
+public class Endereco {
+    final String logadouro;
+    final String bairro;
+    final String cidade;
+    final String uf;
+    final String cep;
+
+    public Endereco(String logadouro, String bairro, String cidade, String uf, String cep) {
+        super();
+        this.logadouro = logadouro;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.uf = uf;
+        this.cep = cep;
+    }
+}
+
+package br.com.filipemot.decorator.interfaces;
+
+import br.com.filipemot.decorator.classes.Endereco;
+
+public interface IEnderecador {
+    String preparaEndereco(Endereco endereco);
+}
+
+package br.com.filipemot.decorator.classes;
+
+import br.com.filipemot.decorator.interfaces.IEnderecador;
+
+public class EnderecadorSimples2 implements IEnderecador {
+    public String preparaEndereco(Endereco endereco){
+        StringBuilder sb = new StringBuilder();
+        sb.append(endereco.logadouro);
+        sb.append(endereco.bairro);
+        sb.append(endereco.cidade);
+        sb.append(endereco.uf);
+        sb.append(endereco.cep);
+
+        return sb.toString();
+    }
+}
+
+package br.com.filipemot.decorator.classes;
+
+import br.com.filipemot.decorator.interfaces.IEnderecador;
+
+//Decorator - Acrescenta funcionalidades
+public class EnderecadorCaixaAlta2 implements IEnderecador {
+    EnderecadorSimples enderecadorSimples;
+
+    public EnderecadorCaixaAlta2(EnderecadorSimples enderecadorSimples){
+        super();
+        this.enderecadorSimples = enderecadorSimples;
+    }
+
+    public String preparaEndereco(Endereco endereco){
+        return enderecadorSimples.preparaEndereco(endereco).toUpperCase();
+    }
+}
+```
+
+E por ultimo além da Interface, podemos utilizar Classe abstrata.
+
+```java
+package br.com.filipemot.decorator.classes;
+
+public class Endereco {
+    final String logadouro;
+    final String bairro;
+    final String cidade;
+    final String uf;
+    final String cep;
+
+    public Endereco(String logadouro, String bairro, String cidade, String uf, String cep) {
+        super();
+        this.logadouro = logadouro;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.uf = uf;
+        this.cep = cep;
+    }
+}
+
+package br.com.filipemot.decorator.interfaces;
+
+import br.com.filipemot.decorator.classes.Endereco;
+
+public interface IEnderecador {
+    String preparaEndereco(Endereco endereco);
+}
+
+package br.com.filipemot.decorator.classes;
+
+import br.com.filipemot.decorator.interfaces.IEnderecador;
+
+abstract class EnderecadorDecorator implements IEnderecador {
+    IEnderecador enderecador;
+    public EnderecadorDecorator(IEnderecador enderecador){
+        super();
+        this.enderecador = enderecador;
+    }
+}
+
+package br.com.filipemot.decorator.classes;
+
+import br.com.filipemot.decorator.interfaces.IEnderecador;
+
+public class EnderecadorCaixaAlta3 extends EnderecadorDecorator {
+    EnderecadorSimples enderecadorSimples;
+
+    public EnderecadorCaixaAlta3(IEnderecador enderecador){
+        super(enderecador);
+    }
+
+    public String preparaEndereco(Endereco endereco){
+        return enderecadorSimples.preparaEndereco(endereco).toUpperCase();
+    }
+}
+```
