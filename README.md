@@ -858,3 +858,55 @@ public class EnderecadorCaixaAlta3 extends EnderecadorDecorator {
     }
 }
 ```
+
+# Padrão Template Method
+
+Forma diferente de usar herança, mudando o comportamento da classe. Esse padrão obrigatoriamente utilizará herança.
+Basicamente ele tem dois tipos de classe a Abstrata e as Concretas.
+
+```java
+package br.com.filipemot.templatemethod.classes;
+
+abstract class ProcessadorPagamento {
+
+    //Classe Abstract
+
+    //Template Method
+    public void processarPagamento(){
+        preparar();
+        validar();
+        debitar();
+        notificar();
+        finalizar();
+    }
+
+    protected abstract void debitar();
+
+    private void preparar() {
+        System.out.println("Pagamento preparado");
+    }
+
+    private void validar() {
+        System.out.println("Pagamento validado");
+    }
+
+    protected void notificar() {
+        System.out.println("Pagamento notificado");
+    }
+
+    protected void finalizar() {
+        System.out.println("Pagamento finalizado");
+    }
+}
+
+package br.com.filipemot.templatemethod.classes;
+
+public class ProcessadorPagamentoCredito extends ProcessadorPagamento {
+
+    //Classe Concreta
+    @Override
+    protected void debitar() {
+        System.out.print("Debitando credito...");
+    }
+}
+```
